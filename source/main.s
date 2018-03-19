@@ -1,3 +1,12 @@
+@ floor - 640*770 - 592, 107
+@ ball	- 15*15 - 
+@ bricks*3 & valuepack - 60*30
+@ startgame - 180*60
+@ quit - 180*60
+@ restart - 180*60
+@ selection box - 200*80
+@ penal - 148*28
+
 
 @ Code section
 .section .text
@@ -8,25 +17,67 @@ main:
 	ldr 		r0, =frameBufferInfo 	@ frame buffer information structure
 	bl		initFbInfo
 
-	mov		r4, #199		@ width
-	mov		r5, #199		@ height
-	ldr		r6, =image		@ image address
-	mov		r7, #200		@ x offset
-	mov		r8, #200		@ y offset
+	@display floor
+	mov		r4, #640		@ width
+	mov		r5, #770		@ height
+	ldr		r6, =floor		@ image address
+	mov		r7, #592		@ x offset
+	mov		r8, #107		@ y offset
 	push		{r4-r8}
 	bl		drawPicture
 
-	mov		r4, #199		@ width
-	mov		r5, #199		@ height
-	ldr		r6, =image		@ image address
-	mov		r7, #400		@ x offset
-	mov		r8, #400		@ y offset
+	@display startmenu
+	mov		r4, #640		@ width
+	mov		r5, #770		@ height
+	ldr		r6, =startmenu		@ image address
+	mov		r7, #592		@ x offset
+	mov		r8, #107		@ y offset
 	push		{r4-r8}
 	bl		drawPicture
 
-	@ stop
-	haltLoop$:
-		b	haltLoop$
+	@diapaly selection box
+	mov		r4, #200		@ width
+	mov		r5, #80			@ height
+	ldr		r6, =box		@ image address
+	mov		r7, #812		@ x offset
+	mov		r8, #492		@ y offset
+	push		{r4-r8}
+	bl		drawPicture
+
+	@display startgame button
+	mov		r4, #180		@ width
+	mov		r5, #60			@ height
+	ldr		r6, =startgame		@ image address
+	mov		r7, #822		@ x offset
+	mov		r8, #502		@ y offset
+	push		{r4-r8}
+	bl		drawPicture
+
+
+	@dispaly quit button
+	mov		r4, #180		@ width
+	mov		r5, #60			@ height
+	ldr		r6, =quit		@ image address
+	mov		r7, #822		@ x offset
+	mov		r8, #622		@ y offset
+	push		{r4-r8}
+	bl		drawPicture
+
+
+
+	mov		r4, #15		@ width
+	mov		r5, #15			@ height
+	ldr		r6, =ball		@ image address
+	mov		r7, #790		@ x offset
+	mov		r8, #502		@ y offset
+	push		{r4-r8}
+	bl		drawPicture
+
+@b1:	mov 		r4, r0
+
+
+haltLoop$:
+	b	haltLoop$
 
 
 
@@ -92,7 +143,8 @@ noPixel$:
 	.unreq	mask
 	.unreq  pxstr
 
-	pop		{r4-r8, pc}
+	pop		{r4-r8, pc}
+
 @ Data section
 .section .data
 
