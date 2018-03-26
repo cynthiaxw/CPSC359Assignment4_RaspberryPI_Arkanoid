@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+//Function prototypes
+void drawABall(int x, int y);	//param: x,y - draw ball on (x,y)
+void drawACell(int x, int y);	//param: x,y - draw floor on (x,y)
+
+extern void gameProcessing();
+extern int prePaddle[3];
+extern int curPaddle[3];
+extern int preBall[2];
+extern int curBall[2];
+extern int ballDirection[2];
+
+
+int calMapOffset(int x, int y){
+    return (x/32) * 32 + ( (y/32) * 32) * 22;
+}
+
+//param: x,y
+//return: 0 - not hit paddle
+//return: 1 - hit left
+//return: 2 - hit right
+//return: 3 - hit middle
+int hitPaddle(int x, int y){
+    if(y < curPaddle[1] || x < curPaddle[0] || x > curPaddle[0] + curPaddle[2]){
+        return 0;
+    }
+    if(x > curPaddle[0] && x < curPaddle[0] + 16){  //hit left
+        ballDirection[0] = -5;
+        ballDirection[1] = 5;
+        return 1;
+    }
+    if(x < curPaddle[0] + curPaddle[2] && x > curPaddle[0] + curPaddle[2] - 48){    //hit right
+        ballDirection[0] = 5;
+        ballDirection[1] = 5;
+        return 2;
+    }
+    else{   //hit middle
+        if(ballDirection[0] > 0){//move right up
+            ballDirection[0] = 4;
+            ballDirection[1] = 6;
+        }
+        else{//move left up
+            ballDirection[0] = -4;
+            ballDirection[1] = 6;
+        }
+        return 3;
+    }
+
+}
+
+void updateBall(){
+
+//calculate the movement (direction)
+    int tmp;
+    tmp = hitPaddle(x,y);
+    if(tmp != 0){   //hit paddle
+        goto l_continue;
+    }
+//get value from map
+    int offset = calMapOffset(preBall[0], preBall[1]);
+    tmp = gameMap[offset];
+    if(tmp == 0){   //nothing special
+        goto l_continue;
+    }
+    if(tmp == 8){   //hit left wall or right wall
+        ballDirection[0] *= -1;
+        goto l_continue;
+    }
+    if(tmp == 9){   //hit up wall
+        ballDirection[1] *= -1;
+        goto l_continue;
+    }
+    //hit bricks
+    gameMap[offset] --;
+//TODO: if value pack hidden behind the brick?
+
+l_continue:
+//Draw ball
+    cleanPreBall();
+    drawABall(curBall[0], curBall[1]);
+    preBall[0] = curBall[0];
+    preBall[1] = curBall[1];
+}
+
+void gameProcessing(){
+    updateBall();
+}
