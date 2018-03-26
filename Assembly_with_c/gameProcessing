@@ -4,6 +4,7 @@
 //Function prototypes
 void drawABall(int x, int y);	//param: x,y - draw ball on (x,y)
 void drawACell(int x, int y);	//param: x,y - draw floor on (x,y)
+void drawABrick(int offset, int type);
 
 extern void gameProcessing();
 extern int prePaddle[3];
@@ -74,6 +75,7 @@ void updateBall(){
     }
     //hit bricks
     gameMap[offset] --;
+    drawABrick(offset, --tmp);
 //TODO: if value pack hidden behind the brick?
 
 l_continue:
