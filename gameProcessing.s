@@ -133,7 +133,7 @@ continue:
 
 	mov	r2, r4
 	ldr 	r3, =curPaddle			@ store the new length in curPaddle
-	str	r2, [r3, #12]
+	str	r2, [r3, #8]
 
 	mov	r5, #32
 
@@ -143,11 +143,11 @@ continue:
 
 	ldr	r0, =curPaddle
 	ldr	paddleX, [r0]			@ x
-	ldr	r2, [r0, #12]			@ length
+	ldr	r2, [r0, #8]			@ length
 
 	ldr	r0, =prePaddle
 	str	paddleX, [r0]			@ x
-	str	r2, [r0, #12]			@ length
+	str	r2, [r0, #8]			@ length
 	
 
 
