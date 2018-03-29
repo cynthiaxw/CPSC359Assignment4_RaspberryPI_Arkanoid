@@ -9,6 +9,7 @@ gameProcessing:
 
 
 @ Move Paddle-------------------------
+.global movePaddle
 movePaddle:
 	push	{r4-r10, lr}
 	
@@ -27,7 +28,27 @@ movePaddle:
 	ldr	paddleX, [r0]
 	ldr	paddleY, [r0, #4]
 
+
+	ldr	r0, =pressed_button	@get pressed_button
+	ldr	pressButton, [r0]
+	cmp	pressButton, #2
+	bne	check3
+	beq	startMove
+
+check3:	cmp	pressButton, #3
+	bne	check8
+	beq	startMove
+
+check8:	cmp	pressButton, #8
+	bne	check9
+	beq	startMove
+
+check9:	cmp	pressButton, #9
+	bne	done
+	beq	startMove
+
 @--------------------cleanCell----------------------------
+startMove:
 	mov	r10, #0	
 	ldr	r4, =floor
 	
@@ -150,6 +171,9 @@ continue:
 	str	r2, [r0, #8]			@ length
 	
 
+Test_checkValuepack:
+
+	bl	valuepack	
 
 
 @Test_checkGameover:
