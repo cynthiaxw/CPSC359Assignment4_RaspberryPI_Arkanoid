@@ -1,0 +1,161 @@
+.constant
+x 2
+y 5
+OBJREF 0x50
+//.constant
+OBJREF1 0x40         // objref (address)
+//.end-constant
+.end-constant
+
+.main
+    LDC_W OBJREF
+    LDC_W x
+    LDC_W y
+    INVOKEVIRTUAL power
+    HALT
+.end-main 
+
+// -----------------------------------------------------------------
+
+.method imul(int1, int2)
+.var
+x
+y
+m
+i
+c
+o
+.end-var
+
+imul:
+    ILOAD int1
+    ILOAD int2
+    ISTORE y
+    ISTORE x
+    BIPUSH 0x0
+    DUP
+    ISTORE m
+    ISTORE i
+
+    ILOAD x
+    DUP
+    IFLT label1
+    ISTORE c
+    GOTO label2
+
+label1:
+    INEG
+    ISTORE c
+    
+    
+label2:
+    ILOAD y
+    DUP
+    IFLT label3
+    ISTORE o
+    GOTO label4
+
+label3:
+    INEG
+    ISTORE o
+
+label4:         // cmp c and o 
+    ILOAD c
+    ILOAD o
+
+    ISUB        // c - o
+    IFLT check   // c - min o - max
+    // c- max o- min
+    
+    ILOAD c
+    ILOAD o
+    ISTORE c
+    ISTORE o
+   
+check:
+    ILOAD i
+    ILOAD c
+    ISUB
+
+    IFLT loop
+    GOTO label5
+
+loop:   
+    ILOAD o
+    ILOAD m
+    IADD
+    ISTORE m
+    ILOAD i
+    BIPUSH 0x1
+    IADD
+    ISTORE i
+    GOTO check
+
+label5:         // if statement
+    ILOAD x
+    IFLT label6
+    ILOAD y
+    IFLT label7 // case: one negative
+    GOTO exit  // case: both positive
+  
+label6:
+    ILOAD y
+    IFLT exit   // case: both negative
+
+label7:
+    ILOAD m
+    INEG
+    ISTORE m
+
+exit:
+    ILOAD m 
+
+    IRETURN
+.end-method
+// -----------------------------------------------------
+.method power(int3, int4)
+.var
+x1
+y1
+t       // total
+j       // index 
+.end-var
+
+
+
+power:
+    ILOAD int3
+    ILOAD int4
+    ISTORE y1          // x - int1; y - int2; x power y (x^y)
+    ISTORE x1
+    BIPUSH 0x1
+    ISTORE t
+    BIPUSH 0x0
+    ISTORE j
+    
+check1:
+    ILOAD j
+    ILOAD y1
+    ISUB              // j - y
+    IFLT loop1
+    GOTO exit1
+
+loop1:
+    LDC_W OBJREF1
+    ILOAD t
+    ILOAD x1
+    INVOKEVIRTUAL imul
+    ISTORE t
+    ILOAD j
+    BIPUSH 0x1
+    IADD
+    ISTORE j
+    GOTO check1
+
+exit1:
+    ILOAD t
+    IRETURN
+.end-method
+
+
+
